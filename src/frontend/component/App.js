@@ -1,20 +1,26 @@
-import React from 'react';
-import PurpleAppBar from './PurpleAppBar.js';      // AppBar with simple overrides
-import SuccessButton from './SuccessButton.js';    // A button with complex overrides
-import { Button } from 'react-toolbox/lib/button'; // Bundled component import
-import TestCards from './Card.js';                       // Card
+import { connect } from 'react-redux';
+import Main from './Main';
+import { getProjects } from '../actions/getProjectsAction'; 
+import { addProject } from '../actions/addProjectAction';
+import { deleteProject } from '../actions/deleteProject';
+import { watchProjectAddedEvent } from '../actions/watchAddedAction';
 
-const App = () => (
-  <div>
-    <PurpleAppBar />
-    <section style={{ padding: 20 }}>
-      <SuccessButton label='Success' primary raised />
-      <Button label='Primary Button' primary />
-    </section>
-    <section style={{ padding: 20 }}>
-      <TestCards />
-    </section>
-  </div>
-);
+function mapStateToProps(state) {
+  return {
+    projects: state.projects
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+    watchProjectAddedEvent(dispatch);
+    return {
+      onGetProjects: () => dispatch(getProjects()),
+      onAddProject: (abbr,name) => dispatch(addProject(abbr,name)),
+      deleteProject: (projectId) => dispatch(deleteProject(projectId))
+  };
+}
+
+// calling (Main) adds actions and props to main and makes them available
+const App = connect(mapStateToProps, mapDispatchToProps)(Main);
 
 export default App;
